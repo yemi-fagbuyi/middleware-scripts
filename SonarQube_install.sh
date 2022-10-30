@@ -7,7 +7,7 @@
 
 echo "Sonarqube doesnt work when you start it as root user so please exit root"
 
-su - vagrant
+
 
 echo "installation will begin in a few seconds ...."
 sleep 4
@@ -28,6 +28,7 @@ sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.3.
 if [ $? nq 0]
 
 then 
+echo "wget not installed!! ... now instaliing wget "
 sudo yum install wget -y
 sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.3.0.51899.zip
 else 
@@ -48,7 +49,9 @@ sudo unzip /opt/sonarqube-9.3.0.51899.zip
 echo "Change ownership to the user and Switch to Linux binaries directory to start service"
 
 sudo chown -R vagrant:vagrant /opt/sonarqube-9.3.0.51899
+
 cd /opt/sonarqube-9.3.0.51899/bin/linux-x86-64
+
  ./sonar.sh start 
 
  sleep 6
@@ -57,9 +60,23 @@ cd /opt/sonarqube-9.3.0.51899/bin/linux-x86-64
 
  #http://localhost:9000/
 
- sudo firewall-cmd --permanent --add-port=9000/tcp
+
+# sudo firewall-cmd --permanent --add-port=9000/tcp
+
+
+#if [ $? nq 0]
+
+#then
+echo "firewalld not installed ... now instaliing firewalld service  "
+sudo yum install firewalld -y
+systemctl start firewalld
+systemctl enable firewalld
+
+sudo firewall-cmd --permanent --add-port=9000/tcp
  sudo firewall-cmd --reload
 
- Echo "installation complete!!!! ... you can listen on port 9000"
-
-
+#else
+echo "Firewalled  is installed"
+sudo firewall-cmd --permanent --add-port=9000/tcp
+ sudo firewall-cmd --reload
+echo "installation complete!!!! ... you can listen on port 9000"
